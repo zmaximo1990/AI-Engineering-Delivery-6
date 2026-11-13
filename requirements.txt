@@ -1,0 +1,9 @@
+langchain==1.2.18
+langchain-anthropic==1.7.6
+langchain-google-genai==4.4.2
+langchain-openai==1.7.1
+langchain-tavily==0.2.18
+langgraph==1.1.10
+pydantic==2.14.1
+pydantic-settings==2.16.1
+python-dotenv==1.2.4

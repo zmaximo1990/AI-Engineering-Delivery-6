@@ -1,0 +1,13 @@
+.env
+.envrc
+.venv/
+.pytest_cache/
+__pycache__/
+*.egg-info/
+*.pyc
+.DS_Store
+trace.log
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
