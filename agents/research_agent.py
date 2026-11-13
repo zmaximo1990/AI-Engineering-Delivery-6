@@ -51,6 +51,38 @@ def _task(state: OrchestratorState) -> str:
     return "\n\n".join(parts)
 
 
+def _exception_reason(exc: BaseException, depth: int = 0) -> str:
+    """Exception text plus HTTP status, reason, and body. API keys are removed."""
+    if depth > 5:
+        return ""
+    response = getattr(exc, "response", None)
+    status = getattr(exc, "status", None) or getattr(exc, "status_code", None)
+    reason = getattr(exc, "reason", None)
+    body = ""
+    if response is not None:
+        status = status or getattr(response, "status_code", None) or getattr(response, "status", None)
+        reason = reason or getattr(response, "reason", None)
+        text = getattr(response, "text", None)
+        if isinstance(text, str):
+            body = text
+        else:
+            content = getattr(response, "content", None)
+            if isinstance(content, bytes):
+                body = content.decode("utf-8", errors="replace")
+            elif content is not None:
+                body = str(content)
+    detail = public_error(exc)
+    if status or reason or body:
+        body_text = public_error(ValueError(body)) if body else "-"
+        detail = f"{detail} status={status} reason={reason} body={body_text}"
+    cause = exc.__cause__ or exc.__context__
+    if isinstance(cause, BaseException) and cause is not exc:
+        nested = _exception_reason(cause, depth + 1)
+        if nested:
+            detail = f"{detail} | {nested}"
+    return detail
+
+
 def make_research_node(get_model: Callable[[], BaseChatModel]):
     """Return the research node. The react agent is built on the first visit."""
     agent_box: dict[str, object] = {}
@@ -72,7 +104,8 @@ def make_research_node(get_model: Callable[[], BaseChatModel]):
             messages = await run_specialist(agent(), _task(state))
             summary = final_text(messages)
         except Exception as exc:
-            logger.exception("Research agent failed")
+            detail = _exception_reason(exc)
+            logger.exception("Research agent failed. Tavily call detail: %s", detail)
             error = public_error(exc)
             return {
                 **base,

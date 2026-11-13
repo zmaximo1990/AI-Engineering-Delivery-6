@@ -169,8 +169,12 @@ def web_search(query: str) -> str:
         )
         raw = search.invoke({"query": cleaned})
     except Exception as exc:
-        logger.warning("Tavily search failed")
-        return _dumps({"error": "Web search failed.", "detail": _public_error(exc)})
+        reason = _public_error(exc)
+        logger.warning("Tavily search failed query=%r reason=%s", cleaned, reason)
+        return _dumps({"error": "Web search failed.", "detail": reason})
+    if isinstance(raw, dict) and raw.get("error"):
+        reason = _public_error(raw["error"])
+        logger.warning("Tavily search failed query=%r reason=%s", cleaned, reason)
     return _dumps(_trim_results(raw))
 
 
