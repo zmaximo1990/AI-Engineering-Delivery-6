@@ -100,6 +100,7 @@ Poné las claves en `.env`. Ese archivo está en el gitignore.
 | `settings.py` | Rutas, tope de pasos, límites de recursión y el proveedor por defecto |
 | `trace.log` | Traza de ejecución. La CLI y `--demo` agregan cada corrida acá. En el gitignore. `-c` / `--clean` lo trunca. |
 | `trace.log.example` | Ejemplo de tracelog de la corrida demo (`python main.py --demo`). |
+| `video.mov` | Video demo de la corrida. |
 | `requirements.txt` | Dependencias |
 | `pyproject.toml` | Exige Python 3.12 (`>=3.12,<3.13`) |
 | `.env.dist` | Plantilla de entorno con secretos vacíos |
@@ -133,7 +134,7 @@ python main.py -c --demo
 
 ### Demo
 
-`sample.py` hace tres preguntas. Cada una arranca desde un estado nuevo.
+`sample.py` hace tres preguntas. Cada una arranca desde un estado nuevo. En `video.mov` se deja el video demo.
 
 1. Cobertura reciente de los últimos resultados trimestrales de NVIDIA y el sentimiento general de esas fuentes. El investigador busca. El analista llama a `score_sentiment`.
 2. Los precios actuales de NVIDIA (NVDA) y AMD, y la diferencia porcentual del precio de NVIDIA respecto al de AMD. El analista tiene que llamar a `calculate`.
